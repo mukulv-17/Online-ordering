@@ -15,18 +15,16 @@ public class Client {
         System.out.println("Ok");
         mainframeController temp = new mainframeController();
         order o = temp.get_order();
+        o.print_order();
         os.writeObject(o);
         System.out.println("Sending information to the server ...");
 
         DataInputStream  input   = null;
         DataOutputStream out     = null;
 
-//        input  = new DataInputStream(socket.getInputStream());
-//        String output = input.readUTF();
-//        System.out.println(output);
-//        ObjectInputStream is = new ObjectInputStream(socket.getInputStream());
-//        Message returnMessage = (Message) is.readObject();
-//        System.out.println("return Message is=" + returnMessage.result());
+        ObjectInputStream is = new ObjectInputStream(socket.getInputStream());
+        Message returnMessage = (Message) is.readObject();
+        System.out.println("return Message is=" + returnMessage);
         socket.close();
     }
 }

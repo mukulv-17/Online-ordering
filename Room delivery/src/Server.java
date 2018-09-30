@@ -13,7 +13,7 @@ public class Server {
         runServer();
     }
 
-    public static void  runServer() throws IOException, ClassNotFoundException{
+    private static void  runServer() throws IOException, ClassNotFoundException{
         ss = new ServerSocket(port);
         System.out.println("System is ready to accept connections");
         Socket socket = ss.accept();
@@ -27,14 +27,21 @@ public class Server {
         order o = (order) is.readObject();
 //        doSomething(m);
         Semaphore sem = new Semaphore(1);
+        Shared shared_obj = new Shared();
 
         // creating two threads with name A and B
         // Note that thread A will increment the count
         // and thread B will decrement the count
-        MyThread mt1 = new MyThread(sem, "A",o);
+        MyThread mt1 = new MyThread(sem, "A",o,shared_obj);
         mt1.start();
-        out.writeUTF(mt1.output);
-//        os.writeObject(o);
+        shared_obj = mt1.shared_obj;
+        String out = mt1.output;
+        System.out.println(out);
+//        out.writeUTF(mt1.output);
+////        os.writeObject(o);
+//        socket.close();
+
+        os.writeObject(out);
         socket.close();
     }
 

@@ -34,12 +34,13 @@ public class shop_orders {
                 available_quantity = this.shop.get_item_quantity().get( item );
                 asked_quantity = placed_order.get_quantities()[i];
 
-                if( item.equals("tea") || item.equals("coffee") ){
+                if( item.equals("Tea") || item.equals("Coffee") ){
 
                     order_amount += ( asked_quantity )*( this.shop.get_item_price().get( item ) );
                     current_time = System.currentTimeMillis()/1000;
                     if(this.tea_coffee_time < current_time ){
                         this.tea_coffee_time = current_time + 60*asked_quantity;
+
                         time_required += 60*asked_quantity;
                     }else{
                         time_required += this.tea_coffee_time - current_time;
@@ -68,20 +69,20 @@ public class shop_orders {
 
         if( unavailable.size() > 0 ){
             System.out.println("Some items you requested are unavailable.");
-            output += "Some items you requested are unavailable.\n";
+            output += "Some items you requested are unavailable. ";
             i = 0;
             while( i < unavailable.size() ){
                 System.out.println( unavailable.get(i));
-                output += unavailable.get(i) + "\n";
+                output += unavailable.get(i) + " ";
                 i += 1;
             }
             System.out.println("Order not placed.");
-            output += "Order not placed.\n";
+            output += "Order not placed.";
 
         }else{
-            output += "Order successfully placed\n";
-            output += "Amout to be paid : " + Integer.toString(order_amount) + "\n";
-            output += "Wait time : " +  Float.toString( time_required/60)  + " minutes \n";
+            output += "Order successfully placed ";
+            output += "Amout to be paid : " + Integer.toString(order_amount) + " ";
+            output += "Wait time : " +  Float.toString( time_required/60)  + " minutes ";
             placed_order.set_date();
             placed_order.set_total_amount(order_amount);
             placed_order.set_time_required(time_required/60);
@@ -93,7 +94,7 @@ public class shop_orders {
             }
             this.orders.add(placed_order);
         }
-
+        System.out.println(output);
         return output;
     }
 
@@ -175,10 +176,13 @@ public class shop_orders {
 
 class Shared
 {
-    static int[] price = {7,10,10,5,25};
-    static int[] quantity = {1000,20,30,9,5};
-    static String[] items = {"tea", "biscuit" , "lays" , "tom tom" , "ice-cream"};
-    static shop_orders core1_shop = new shop_orders(4 , 10 , items, quantity , price);
+    static int[] price = {6,7,10,10,15,20};
+    static int[] quantity = {1000,1000,20,30,9,5};
+    static String[] items = {"Tea", "Coffee", "Biscuits" , "Chips" , "Cake" , "Sandwich"};
+    static shop_orders core1_shop = new shop_orders(6 , 10 , items, quantity , price);
+    Shared(){
+        this.core1_shop = new shop_orders(6 , 10 , items, quantity , price);
+    }
 }
 
 class MyThread extends Thread
@@ -187,12 +191,14 @@ class MyThread extends Thread
     String threadName;
     order o;
     String output;
-    public MyThread(Semaphore sem, String threadName, order o)
+    Shared shared_obj;
+    public MyThread(Semaphore sem, String threadName, order o,Shared shared_obj)
     {
         super(threadName);
         this.sem = sem;
         this.threadName = threadName;
         this.o = o;
+        this.shared_obj = shared_obj;
     }
 
     @Override
@@ -218,7 +224,7 @@ class MyThread extends Thread
 //
 //            order order1 = new order(it,qt,"SV");
             this.output = Shared.core1_shop.add_order(this.o);
-            Shared.core1_shop.print_orders();
+            shared_obj.core1_shop.print_orders();
             System.out.println(threadName + " releases permit.");
             Thread.sleep(1000);
             sem.release();

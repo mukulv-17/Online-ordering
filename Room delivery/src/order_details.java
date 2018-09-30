@@ -3,6 +3,8 @@ import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,48 @@ public class order_details extends JFrame {
     private JSpinner spinner5;
     private JTextField textField1;
     private JPanel mainPanel;
+
+    private volatile order o = null;
+
+    order get_order() {
+        while (o == null) {
+            Thread.onSpinWait();
+        }
+        return this.o;
+    }
+
+    public order_details() {
+        OKButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                okbuttonActionPerformed(e);
+            }
+
+            private void okbuttonActionPerformed(ActionEvent e) {
+
+            }
+        });
+        OKButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                okbuttonMouseClicked(e);
+            }
+
+            private void okbuttonMouseClicked(MouseEvent e) {
+                ArrayList<JSpinner> spinners = getSpinners();
+                int[] quantities = new int[]{(Integer) spinners.get(0).getValue(),
+                        (Integer) spinners.get(1).getValue(),
+                        (Integer) spinners.get(2).getValue(),
+                        (Integer) spinners.get(3).getValue(),
+                        (Integer) spinners.get(4).getValue(),
+                        (Integer) spinners.get(5).getValue()};
+                String[] x = new String[]{"Tea", "Coffee", "Chips", "Biscuits", "Cake", "Sandwich"};
+                o = new order(x, quantities, "Name");
+                dispose();
+            }
+        });
+    }
+
 
     ArrayList<JSpinner> getSpinners() {
         ArrayList<JSpinner> a = new ArrayList<>();
@@ -133,7 +177,6 @@ public class order_details extends JFrame {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
-
 
 
 //    order_details(){

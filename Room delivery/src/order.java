@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.*;
 
-public class order {
+public class order implements Serializable {
 
     private String[] items;//
     private int[] quantities;//
@@ -50,6 +51,6 @@ public class order {
         System.out.println(this.name);
         System.out.println(this.time_required);
         System.out.println(this.total_amount);
-
+        System.out.println(Arrays.toString(this.quantities));
     }
 }
